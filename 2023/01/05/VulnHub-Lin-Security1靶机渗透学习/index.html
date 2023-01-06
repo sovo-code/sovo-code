@@ -16,14 +16,14 @@
   <meta name="author" content="sovo">
   <meta name="keywords" content="">
   
-    <meta name="description" content="VulnHub-Lin.Security: 1-靶机渗透学习登陆账户及密码：普通账户：bob&#x2F;secret root账户：root&#x2F;secret123 靶机网络配置：靶机网络使用netplan配置：登陆root账户进行修改配置文件：     kalissh连接  渗透思路及步骤nmap扫描内网  找到目标靶机 经过……获取到bob权限 查看所拥有的权限sudo -l  ash一">
+    <meta name="description" content="VulnHub-Lin.Security: 1-靶机渗透学习登陆账户及密码：普通账户：bob&#x2F;secret root账户：root&#x2F;secret123 靶机网络配置：靶机网络使用netplan配置：登陆root账户进行修改配置文件：       kalissh连接  渗透思路及步骤nmap扫描内网  找到目标靶机 经过……获取到bob权限 查看所拥有的权限sudo -l  as">
 <meta property="og:type" content="article">
 <meta property="og:title" content="VulnHub-Lin-Security1靶机渗透学习">
 <meta property="og:url" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/index.html">
 <meta property="og:site_name" content="小小做题家">
-<meta property="og:description" content="VulnHub-Lin.Security: 1-靶机渗透学习登陆账户及密码：普通账户：bob&#x2F;secret root账户：root&#x2F;secret123 靶机网络配置：靶机网络使用netplan配置：登陆root账户进行修改配置文件：     kalissh连接  渗透思路及步骤nmap扫描内网  找到目标靶机 经过……获取到bob权限 查看所拥有的权限sudo -l  ash一">
+<meta property="og:description" content="VulnHub-Lin.Security: 1-靶机渗透学习登陆账户及密码：普通账户：bob&#x2F;secret root账户：root&#x2F;secret123 靶机网络配置：靶机网络使用netplan配置：登陆root账户进行修改配置文件：       kalissh连接  渗透思路及步骤nmap扫描内网  找到目标靶机 经过……获取到bob权限 查看所拥有的权限sudo -l  as">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417152303330.png">
+<meta property="og:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417152303330.png">
 <meta property="og:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417152749572.png">
 <meta property="og:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417152848346.png">
 <meta property="og:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417153031372.png">
@@ -34,7 +34,6 @@
 <meta property="og:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417171958476.png">
 <meta property="og:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417172056539.png">
 <meta property="og:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417172156127.png">
-<meta property="og:image" content="c:\Users\sovo\Desktop\image-20220417172248524.png">
 <meta property="og:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417172406412.png">
 <meta property="og:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417172457620.png">
 <meta property="og:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417172650075.png">
@@ -60,12 +59,12 @@
 <meta property="og:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380594_5ffc7532b586adeb9df50.jpeg">
 <meta property="og:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417172946052.png">
 <meta property="article:published_time" content="2023-01-05T10:09:17.000Z">
-<meta property="article:modified_time" content="2023-01-05T10:11:50.882Z">
+<meta property="article:modified_time" content="2023-01-06T02:43:21.818Z">
 <meta property="article:author" content="sovo">
 <meta property="article:tag" content="web">
 <meta property="article:tag" content="提权">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417152303330.png">
+<meta name="twitter:image" content="http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417152303330.png">
   
   
   
@@ -343,7 +342,9 @@
                 
                 <h1 id="VulnHub-Lin-Security-1-靶机渗透学习"><a href="#VulnHub-Lin-Security-1-靶机渗透学习" class="headerlink" title="VulnHub-Lin.Security: 1-靶机渗透学习"></a>VulnHub-Lin.Security: 1-靶机渗透学习</h1><h2 id="登陆账户及密码："><a href="#登陆账户及密码：" class="headerlink" title="登陆账户及密码："></a>登陆账户及密码：</h2><p>普通账户：bob&#x2F;secret</p>
 <p>root账户：root&#x2F;secret123</p>
-<h2 id="靶机网络配置："><a href="#靶机网络配置：" class="headerlink" title="靶机网络配置："></a>靶机网络配置：</h2><p>靶机网络使用netplan配置：<br>登陆root账户进行修改配置文件：<br><img src="VulnHub-Lin-Security1靶机渗透学习/image-20220417152303330.png" srcset="/img/loading.gif" lazyload alt="image-20220417152303330" style="zoom:50%;" /></p>
+<h2 id="靶机网络配置："><a href="#靶机网络配置：" class="headerlink" title="靶机网络配置："></a>靶机网络配置：</h2><p>靶机网络使用netplan配置：<br>登陆root账户进行修改配置文件：</p>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417152303330.png" srcset="/img/loading.gif" lazyload class="" title="image-20220417152749572">
+
 <img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417152749572.png" srcset="/img/loading.gif" lazyload class="" title="image-20220417152749572">
 
 <img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417152848346.png" srcset="/img/loading.gif" lazyload class="" title="image-20220417152848346">
@@ -378,7 +379,6 @@
 
 <h3 id="dash"><a href="#dash" class="headerlink" title="dash"></a>dash</h3><p>原来bash是GNU&#x2F;Linux 操作系统中的 &#x2F;bin&#x2F;sh 的符号连接，但由于bash过于复杂，有人把 bash 从 NetBSD 移植到 Linux 并更名为 dash，且&#x2F;bin&#x2F;sh符号连接到dash。Dash Shell 比 Bash Shell 小的多（ubuntu16.04上，bash大概1M，dash只有150K），符合POSIX标准。Ubuntu 6.10开始默认是Dash。</p>
 <p>sudo dash</p>
-<p><img src="C:\Users\sovo\Desktop\image-20220417172248524.png" srcset="/img/loading.gif" lazyload alt="image-20220417172248524"></p>
 <h3 id="ed"><a href="#ed" class="headerlink" title="ed"></a>ed</h3><p>Linux ed命令是文本编辑器，用于文本编辑。</p>
 <p>ed是Linux中功能最简单的文本编辑程序，一次仅能编辑一行而非全屏幕方式的操作。</p>
 <p>ed命令并不是一个常用的命令，一般使用比较多的是vi 指令。但ed文本编辑器对于编辑大文件或对于在shell脚本程序中进行文本编辑很有用。</p>
