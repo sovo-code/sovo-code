@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN" color-mode="light">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <meta name="author" content="sovo" />
+  <meta name="description" content="" />
+  
+  
+  <title>
+    
+      Dapp学习总结-智能合约部署测试及go交互 
+      
+      
+      |
+    
+     小小做题家
+  </title>
+
+  
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+    <link rel="icon" href="/images/favicon.png">
+  
+
+  <!-- Raleway-Font -->
+  <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+
+  <!-- hexo site css -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_1886449_67xjft27j1l.css" />
+  <!-- 代码块风格 -->
+  
+
+  <!-- jquery3.3.1 -->
+  
+    <script defer type="text/javascript" src="/plugins/jquery.min.js"></script>
+  
+
+  <!-- fancybox -->
+  
+    <link href="/plugins/jquery.fancybox.min.css" rel="stylesheet">
+    <script defer type="text/javascript" src="/plugins/jquery.fancybox.min.js"></script>
+  
+  
+<script src="/js/fancybox.js"></script>
+
+
+  
+
+  
+
+  <script>
+    var html = document.documentElement
+    const colorMode = localStorage.getItem('color-mode')
+    if (colorMode) {
+      document.documentElement.setAttribute('color-mode', colorMode)
+    }
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+  <body>
+    <div id="app">
+      <div class="header">
+  <div class="avatar">
+    <a href="/">
+      <!-- 头像取消懒加载，添加no-lazy -->
+      
+        <img src="/images/avatar.png" alt="">
+      
+    </a>
+    <div class="nickname"><a href="/">Oranges</a></div>
+  </div>
+  <div class="navbar">
+    <ul>
+      
+        <li class="nav-item" data-path="/">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          <a href="/archives/">Archives</a>
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          <a href="/tags/">Tags</a>
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          <a href="/friends/">Friends</a>
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          <a href="/about/">About</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+<script src="/js/activeNav.js"></script>
+
+
+
+      <div class="flex-container">
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">Dapp学习总结-智能合约部署测试及go交互</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+          2023-01-13 23:10:56
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags mr-10" title="标签"></i>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" title="区块链">
+                    #区块链
+                  </a>
+                </span>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/go/" title="go">
+                    #go
+                  </a>
+                </span>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/ganache/" title="ganache">
+                    #ganache
+                  </a>
+                </span>
+                
+                <span class="span--tag mr-8">
+                  <a href="/tags/remix/" title="remix">
+                    #remix
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <h1 id="Dapp学习总结-智能合约部署测试及go交互"><a href="#Dapp学习总结-智能合约部署测试及go交互" class="headerlink" title="Dapp学习总结-智能合约部署测试及go交互"></a>Dapp学习总结-智能合约部署测试及go交互</h1><p>第一代的区块链技术在我看来就是分布式的数据库，第二代的以太坊实现了智能合约及EVM虚拟机实现了图灵完备。Dapp是怎么工作的呢？</p>
+<p>首先智能合约是部署在以太网链上的一个地址，所以所有的交互都是与这个地址进行的。第二，智能合约通过编译生成字节码，并部署到以太坊上之后，这就相当于程序的保存，此外众多节点在运行过程中共同构建了以太坊的虚拟机，实现了智能合约运行在以太网虚拟机上。最后我们开发的Dapp就是与智能合约进行交互实现类似于前后端连接的效果。</p>
+<p>下面，我对这些天自己对其学习做出总结实现一个运行于测试网的Demo。</p>
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><p>MetaMask添加测试网</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">https</span>://data-seed-prebsc-<span class="hljs-number">1</span>-s1.binance.org:<span class="hljs-number">8545</span> <br><span class="hljs-attribute">ChainID</span>：<span class="hljs-number">97</span> <br><span class="hljs-attribute">Symbol</span>：BNB<br></code></pre></td></tr></table></figure>
+
+<p>领取BNB，<a target="_blank" rel="noopener" href="https://testnet.binance.org/faucet-smart">https://testnet.binance.org/faucet-smart</a> ，进入后输入自己的钱包地址，领取BNB</p>
+<h2 id="智能合约开发"><a href="#智能合约开发" class="headerlink" title="智能合约开发"></a>智能合约开发</h2><p>使用<a target="_blank" rel="noopener" href="https://remix.ethereum.org/">remix</a>开发部署。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs solidity">pragma solidity ^0.8.7;<br><br>contract sovoDemo &#123;<br>    string private value ;<br><br>    constructor() &#123;<br>        value = &quot;i am sovo&quot;;<br>    &#125;<br><br>    function get() public view returns(string memory ) &#123;<br>    return value;<br>    &#125;<br><br>    function set(string memory _value) public &#123;<br>        value = _value;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>选择对应的版本并编译</p>
+<img src="/2023/01/13/Dapp%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95%E5%8F%8Ago%E4%BA%A4%E4%BA%92/image-20230113192220414.png" class="" title="image-20230113192220414">
+
+<p>部署</p>
+<img src="/2023/01/13/Dapp%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95%E5%8F%8Ago%E4%BA%A4%E4%BA%92/image-20230113192338637.png" class="" title="image-20230113192338637">
+
+<p>小狐狸弹出窗口</p>
+<img src="/2023/01/13/Dapp%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95%E5%8F%8Ago%E4%BA%A4%E4%BA%92/image-20230113193244853.png" class="" title="image-20230113193244853">
+
+<p>点击确认，交易确认，部署成功</p>
+<p>复制合约地址</p>
+<img src="/2023/01/13/Dapp%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95%E5%8F%8Ago%E4%BA%A4%E4%BA%92/image-20230113193447590.png" class="" title="image-20230113193447590">
+
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-number">0x483e105F451186fF2EB390f40060BD4F0DC7327b</span><br></code></pre></td></tr></table></figure>
+
+<p>复制API</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs prolog">[<br>	&#123;<br>		<span class="hljs-string">&quot;inputs&quot;</span>: [<br>			&#123;<br>				<span class="hljs-string">&quot;internalType&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,<br>				<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;_value&quot;</span>,<br>				<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span><br>			&#125;<br>		],<br>		<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;set&quot;</span>,<br>		<span class="hljs-string">&quot;outputs&quot;</span>: [],<br>		<span class="hljs-string">&quot;stateMutability&quot;</span>: <span class="hljs-string">&quot;nonpayable&quot;</span>,<br>		<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;function&quot;</span><br>	&#125;,<br>	&#123;<br>		<span class="hljs-string">&quot;inputs&quot;</span>: [],<br>		<span class="hljs-string">&quot;stateMutability&quot;</span>: <span class="hljs-string">&quot;nonpayable&quot;</span>,<br>		<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;constructor&quot;</span><br>	&#125;,<br>	&#123;<br>		<span class="hljs-string">&quot;inputs&quot;</span>: [],<br>		<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;get&quot;</span>,<br>		<span class="hljs-string">&quot;outputs&quot;</span>: [<br>			&#123;<br>				<span class="hljs-string">&quot;internalType&quot;</span>: <span class="hljs-string">&quot;string&quot;</span>,<br>				<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;&quot;</span>,<br>				<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;string&quot;</span><br>			&#125;<br>		],<br>		<span class="hljs-string">&quot;stateMutability&quot;</span>: <span class="hljs-string">&quot;view&quot;</span>,<br>		<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;function&quot;</span><br>	&#125;<br>]<br></code></pre></td></tr></table></figure>
+
+<h2 id="go项目创建"><a href="#go项目创建" class="headerlink" title="go项目创建"></a>go项目创建</h2><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">go</span> <span class="hljs-built_in">get</span> github.<span class="hljs-keyword">com</span>/ethereum/<span class="hljs-keyword">go</span>-ethereum<br></code></pre></td></tr></table></figure>
+
+<p>创建sovoDemo.abi将上面的ABI粘贴到里面</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">abigen <span class="hljs-attr">--abi</span> sovoDemo<span class="hljs-selector-class">.abi</span> <span class="hljs-attr">--pkg</span> sovo <span class="hljs-attr">--type</span> sovoDemo <span class="hljs-attr">--out</span> sovoDemo.go<br></code></pre></td></tr></table></figure>
+
+<p>生成go文件</p>
+<p>创建main.go</p>
+<p>当我写好main.go是发现无法调用方法，所以采用ganache搭建了本地测试网进行测试</p>
+<h3 id="ganache本地测试网测试"><a href="#ganache本地测试网测试" class="headerlink" title="ganache本地测试网测试"></a>ganache本地测试网测试</h3><p>开启ganache</p>
+<img src="/2023/01/13/Dapp%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95%E5%8F%8Ago%E4%BA%A4%E4%BA%92/image-20230113225652094.png" class="" title="image-20230113225652094">
+
+<h4 id="智能合约部署"><a href="#智能合约部署" class="headerlink" title="智能合约部署"></a>智能合约部署</h4><p>与前面部署类似</p>
+<img src="/2023/01/13/Dapp%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95%E5%8F%8Ago%E4%BA%A4%E4%BA%92/image-20230113225525396.png" class="" title="image-20230113225525396">
+
+<p>但是这里网络选本地的ganache</p>
+<h3 id="go交互"><a href="#go交互" class="headerlink" title="go交互"></a>go交互</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> (<br>	<span class="hljs-string">&quot;fmt&quot;</span><br>	<span class="hljs-string">&quot;github.com/ethereum/go-ethereum/accounts/abi/bind&quot;</span><br>	<span class="hljs-string">&quot;github.com/ethereum/go-ethereum/accounts/keystore&quot;</span><br>	<span class="hljs-string">&quot;github.com/ethereum/go-ethereum/common&quot;</span><br>	<span class="hljs-string">&quot;github.com/ethereum/go-ethereum/ethclient&quot;</span><br>	<span class="hljs-string">&quot;io/ioutil&quot;</span><br>	<span class="hljs-string">&quot;math/big&quot;</span><br>	<span class="hljs-string">&quot;sovoDemo/ABI/sovo&quot;</span><br>)<br><br><span class="hljs-keyword">const</span> (<br>	keyStorePath = <span class="hljs-string">`C:\Users\sovo\AppData\Local\Ethereum\keystore`</span><br>	fromKeyStore = <span class="hljs-string">`UTC--2022-10-24T03-09-07.520991400Z--c89ecafae66e2907d04567954d14df9e217d5e04`</span><br>	chainId      = <span class="hljs-number">5777</span><br>	chtAddress   = <span class="hljs-string">&quot;0x0d57f92F40434119cF0d21Cbf3E8a71Cd82B2b51&quot;</span> <span class="hljs-comment">//合约地址</span><br>)<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>	conn, err := ethclient.Dial(<span class="hljs-string">&quot;HTTP://127.0.0.1:7545&quot;</span>)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		fmt.Println(err.Error())<br>	&#125;<br>	<span class="hljs-keyword">defer</span> conn.Close()<br>	sovodemo, err := sovo.NewSovoDemo(common.HexToAddress(chtAddress), conn)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		fmt.Println(err.Error())<br>	&#125;<br>	s, err := sovodemo.Get(<span class="hljs-literal">nil</span>)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		fmt.Println(err.Error())<br>	&#125;<br>	fmt.Println(s)<br><br>	keyjson, _ := ioutil.ReadFile(keyStorePath + <span class="hljs-string">&quot;\\&quot;</span> + fromKeyStore)<br>    fromkey, _ := keystore.DecryptKey(keyjson, <span class="hljs-string">&quot;&#123;&#123;这里输入你的密码&#125;&#125;&quot;</span>)<br>	fmt.Println(fromkey.Address)<br>	auth, err := bind.NewKeyedTransactorWithChainID(fromkey.PrivateKey, <span class="hljs-built_in">new</span>(big.Int).SetInt64(chainId))<br>	_, err = sovodemo.Set(&amp;bind.TransactOpts&#123;<br>		From:      fromkey.Address,<br>		Nonce:     <span class="hljs-literal">nil</span>,<br>		Signer:    auth.Signer,<br>		Value:     <span class="hljs-literal">nil</span>,<br>		GasPrice:  <span class="hljs-literal">nil</span>,<br>		GasFeeCap: <span class="hljs-literal">nil</span>,<br>		GasTipCap: <span class="hljs-literal">nil</span>,<br>		GasLimit:  <span class="hljs-number">0</span>,<br>		Context:   <span class="hljs-literal">nil</span>,<br>		NoSend:    <span class="hljs-literal">false</span>,<br>	&#125;, <span class="hljs-string">&quot;hello smartcontact&quot;</span>)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		fmt.Println(err.Error())<br>	&#125;<br>	s, err = sovodemo.Get(<span class="hljs-literal">nil</span>)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		fmt.Println(err.Error())<br>	&#125;<br>	fmt.Println(s)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里我不知道如何获取ganache的密钥文件所以使用了自己的，但是在调用set方法时需要gas，然而我的密钥并没有测试币，所以这里需要通过metamask导入ganache的账户进行转账，进而调用set方法</p>
+<img src="/2023/01/13/Dapp%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95%E5%8F%8Ago%E4%BA%A4%E4%BA%92/image-20230113230037288.png" class="" title="image-20230113230037288">
+
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2023/01/07/javaWeb%E5%86%85%E5%AD%98%E9%A9%AC/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime mr-10" title="更新时间"></i>
+              2023-01-13 23:10:56
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags mr-10" title="标签"></i>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" title="区块链">
+                        #区块链
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/go/" title="go">
+                        #go
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/ganache/" title="ganache">
+                        #ganache
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag mr-8">
+                      <a href="/tags/remix/" title="remix">
+                        #remix
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+              <a href="/2023/03/03/weblogic%E8%BF%9C%E7%A8%8B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8CCVE-2023-21839/" target="_self">
+                <span>下一页</span>
+                <i class="iconfont icon-chevronright"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+    </div>
+    
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dapp%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95%E5%8F%8Ago%E4%BA%A4%E4%BA%92"><span class="toc-text">Dapp学习总结-智能合约部署测试及go交互</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-text">环境准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%BC%80%E5%8F%91"><span class="toc-text">智能合约开发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#go%E9%A1%B9%E7%9B%AE%E5%88%9B%E5%BB%BA"><span class="toc-text">go项目创建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ganache%E6%9C%AC%E5%9C%B0%E6%B5%8B%E8%AF%95%E7%BD%91%E6%B5%8B%E8%AF%95"><span class="toc-text">ganache本地测试网测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E9%83%A8%E7%BD%B2"><span class="toc-text">智能合约部署</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#go%E4%BA%A4%E4%BA%92"><span class="toc-text">go交互</span></a></li></ol></li></ol></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
+  </div>
+
+
+        
+<div class="footer">
+  <div class="social">
+    <ul>
+      
+        <li>
+          <a title="github" target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">
+            <i class="iconfont icon-github"></i>
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Copyright © 2023 Oranges</a>
+        
+    </div>
+  
+    
+    <div class="footer-more">
+      
+        <a target="_blank" rel="noopener" href="https://github.com/zchengsite/hexo-theme-oranges">Theme by Oranges | Powered by Hexo</a>
+        
+    </div>
+  
+  
+</div>
+
+      </div>
+
+      <div class="tools-bar">
+        <div class="back-to-top tools-bar-item hidden">
+  <a href="javascript: void(0)">
+    <i class="iconfont icon-chevronup"></i>
+  </a>
+</div>
+
+
+<script src="/js/backtotop.js"></script>
+
+
+
+        
+  <div class="search-icon tools-bar-item" id="search-icon">
+    <a href="javascript: void(0)">
+      <i class="iconfont icon-search"></i>
+    </a>
+  </div>
+
+  <div class="search-overlay hidden">
+    <div class="search-content" tabindex="0">
+      <div class="search-title">
+        <span class="search-icon-input">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-search"></i>
+          </a>
+        </span>
+        
+          <input type="text" class="search-input" id="search-input" placeholder="搜索...">
+        
+        <span class="search-close-icon" id="search-close-icon">
+          <a href="javascript: void(0)">
+            <i class="iconfont icon-close"></i>
+          </a>
+        </span>
+      </div>
+      <div class="search-result" id="search-result"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var inputArea = document.querySelector("#search-input")
+    var searchOverlayArea = document.querySelector(".search-overlay")
+
+    inputArea.onclick = function() {
+      getSearchFile()
+      this.onclick = null
+    }
+
+    inputArea.onkeydown = function() {
+      if(event.keyCode == 13)
+        return false
+    }
+
+    function openOrHideSearchContent() {
+      let isHidden = searchOverlayArea.classList.contains('hidden')
+      if (isHidden) {
+        searchOverlayArea.classList.remove('hidden')
+        document.body.classList.add('hidden')
+        // inputArea.focus()
+      } else {
+        searchOverlayArea.classList.add('hidden')
+        document.body.classList.remove('hidden')
+      }
+    }
+
+    function blurSearchContent(e) {
+      if (e.target === searchOverlayArea) {
+        openOrHideSearchContent()
+      }
+    }
+
+    document.querySelector("#search-icon").addEventListener("click", openOrHideSearchContent, false)
+    document.querySelector("#search-close-icon").addEventListener("click", openOrHideSearchContent, false)
+    searchOverlayArea.addEventListener("click", blurSearchContent, false)
+
+    var searchFunc = function (path, search_id, content_id) {
+      'use strict';
+      var $input = document.getElementById(search_id);
+      var $resultContent = document.getElementById(content_id);
+      $resultContent.innerHTML = "<ul><span class='local-search-empty'>首次搜索，正在载入索引文件，请稍后……<span></ul>";
+      $.ajax({
+        // 0x01. load xml file
+        url: path,
+        dataType: "xml",
+        success: function (xmlResponse) {
+          // 0x02. parse xml file
+          var datas = $("entry", xmlResponse).map(function () {
+            return {
+              title: $("title", this).text(),
+              content: $("content", this).text(),
+              url: $("url", this).text()
+            };
+          }).get();
+          $resultContent.innerHTML = "";
+
+          $input.addEventListener('input', function () {
+            // 0x03. parse query to keywords list
+            var str = '<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length <= 0) {
+              return;
+            }
+            // 0x04. perform local searching
+            datas.forEach(function (data) {
+              var isMatch = true;
+              var content_index = [];
+              if (!data.title || data.title.trim() === '') {
+                data.title = "Untitled";
+              }
+              var orig_data_title = data.title.trim();
+              var data_title = orig_data_title.toLowerCase();
+              var orig_data_content = data.content.trim().replace(/<[^>]+>/g, "");
+              var data_content = orig_data_content.toLowerCase();
+              var data_url = data.url;
+              var index_title = -1;
+              var index_content = -1;
+              var first_occur = -1;
+              // only match artiles with not empty contents
+              if (data_content !== '') {
+                keywords.forEach(function (keyword, i) {
+                  index_title = data_title.indexOf(keyword);
+                  index_content = data_content.indexOf(keyword);
+
+                  if (index_title < 0 && index_content < 0) {
+                    isMatch = false;
+                  } else {
+                    if (index_content < 0) {
+                      index_content = 0;
+                    }
+                    if (i == 0) {
+                      first_occur = index_content;
+                    }
+                    // content_index.push({index_content:index_content, keyword_len:keyword_len});
+                  }
+                });
+              } else {
+                isMatch = false;
+              }
+              // 0x05. show search results
+              if (isMatch) {
+                str += "<li><a href='" + data_url + "' class='search-result-title'>" + orig_data_title + "</a>";
+                var content = orig_data_content;
+                if (first_occur >= 0) {
+                  // cut out 100 characters
+                  var start = first_occur - 20;
+                  var end = first_occur + 80;
+
+                  if (start < 0) {
+                    start = 0;
+                  }
+
+                  if (start == 0) {
+                    end = 100;
+                  }
+
+                  if (end > content.length) {
+                    end = content.length;
+                  }
+
+                  var match_content = content.substr(start, end);
+
+                  // highlight all keywords
+                  keywords.forEach(function (keyword) {
+                    var regS = new RegExp(keyword, "gi");
+                    match_content = match_content.replace(regS, "<span class=\"search-keyword\">" + keyword + "</span>");
+                  });
+
+                  str += "<p class=\"search-result-abstract\">" + match_content + "...</p>"
+                }
+                str += "</li>";
+              }
+            });
+            str += "</ul>";
+            if (str.indexOf('<li>') === -1) {
+              return $resultContent.innerHTML = "<ul><span class='local-search-empty'>没有找到内容，请尝试更换检索词。<span></ul>";
+            }
+            $resultContent.innerHTML = str;
+          });
+        },
+        error: function(xhr, status, error) {
+          $resultContent.innerHTML = ""
+          if (xhr.status === 404) {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>未找到search.xml文件，具体请参考：<a href='https://github.com/zchengsite/hexo-theme-oranges#configuration' target='_black'>configuration</a><span></ul>";
+          } else {
+            $resultContent.innerHTML = "<ul><span class='local-search-empty'>请求失败，尝试重新刷新页面或稍后重试。<span></ul>";
+          }
+        }
+      });
+      $(document).on('click', '#search-close-icon', function() {
+        $('#search-input').val('');
+        $('#search-result').html('');
+      });
+    }
+
+    var getSearchFile = function() {
+        var path = "/search.xml";
+        searchFunc(path, 'search-input', 'search-result');
+    }
+  </script>
+
+
+
+
+        
+  <div class="tools-bar-item theme-icon" id="switch-color-scheme">
+    <a href="javascript: void(0)">
+      <i id="theme-icon" class="iconfont icon-moon"></i>
+    </a>
+  </div>
+
+  
+<script src="/js/colorscheme.js"></script>
+
+
+
+
+
+        
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + Dapp%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95%E5%8F%8Ago%E4%BA%A4%E4%BA%92 + '&url=' + http%3A%2F%2Fsovohelp.fit%2F2023%2F01%2F13%2FDapp%25E5%25AD%25A6%25E4%25B9%25A0%25E6%2580%25BB%25E7%25BB%2593-%25E6%2599%25BA%25E8%2583%25BD%25E5%2590%2588%25E7%25BA%25A6%25E9%2583%25A8%25E7%25BD%25B2%25E6%25B5%258B%25E8%25AF%2595%25E5%258F%258Ago%25E4%25BA%25A4%25E4%25BA%2592%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://sovohelp.fit/2023/01/13/Dapp%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93-%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95%E5%8F%8Ago%E4%BA%A4%E4%BA%92/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
+  
+  
+<script src="/js/shares.js"></script>
+
+
+
+      </div>
+    </div>
+  </body>
+</html>
