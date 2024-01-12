@@ -20,7 +20,9 @@
     
     <tags>
       
-      <tag>burpsuite, captcha</tag>
+      <tag>burpsuite</tag>
+      
+      <tag>captcha</tag>
       
     </tags>
     
@@ -38,7 +40,7 @@
     
     <categories>
       
-      <category>思考</category>
+      <category>生活</category>
       
     </categories>
     
@@ -63,7 +65,7 @@
     
     <categories>
       
-      <category>思考</category>
+      <category>生活</category>
       
     </categories>
     
@@ -164,20 +166,20 @@
     
     <categories>
       
-      <category>区块链</category>
+      <category>blockchain</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>区块链</tag>
-      
       <tag>go</tag>
       
       <tag>ganache</tag>
       
       <tag>remix</tag>
+      
+      <tag>blockchain</tag>
       
     </tags>
     
